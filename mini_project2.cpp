@@ -1,7 +1,10 @@
+
 #include <iostream>
+#include <string>
 using namespace std;
     const int sizeStudent=100;
     const int model=4;
+    const int Max_Class=25;
 
     #if defined (_WIN32)
             #define clear_screen() system ("cls")
@@ -20,8 +23,9 @@ using namespace std;
    struct Student_Record
    {
          
-        string firstName,lastName,address,studentClass,ID,contactInfo;
+        string firstName,lastName,address,studentClass,contactInfo;
         date_of_birth Date;
+        int ID;
         float average=-1.0;
 
 
@@ -63,8 +67,8 @@ using namespace std;
                         cout<<"Enter the grade of physics :";
                         cin>>Mark[indx][j];
                                  result+=Mark[indx][j];
-                            if(Mark[indx][j]<0)
-                                cout<<"Enter number positive please \n";
+                            if(Mark[indx][j]<0 || Mark[indx][j]>20)
+                                cout<<"Enter number in range 0-20 \n";
                         }while (Mark[indx][j]<0);
                               
                         break;
@@ -73,8 +77,8 @@ using namespace std;
                         cout<<"Enter the grade of math :";
                         cin>>Mark[indx][j];
                                  result+=Mark[indx][j];
-                            if(Mark[indx][j]<0)
-                                cout<<"Enter number positive please \n";
+                            if(Mark[indx][j]<0 || Mark[indx][j]>20)
+                                cout<<"Enter number in range 0-20 \n";
                         }while (Mark[indx][j]<0);
                                  
                         break;
@@ -83,9 +87,9 @@ using namespace std;
                         cout<<"Enter the grade of arabic :";
                         cin>>Mark[indx][j];
                                  result+=Mark[indx][j];
-                            if(Mark[indx][j]<0)
-                                cout<<"Enter number positive please \n";
-                        }while (Mark[indx][j]<0);
+                            if(Mark[indx][j]<0 || Mark[indx][j]>20)
+                                cout<<"Enter number in range 0-20 \n";
+                        }while (Mark[indx][j]<0 || Mark[indx][j]>20);
 
                         break;
                         case 3:
@@ -93,9 +97,10 @@ using namespace std;
                         cout<<"Enter the grade of english :";
                         cin>>Mark[indx][j];
                                  result+=Mark[indx][j];
-                            if(Mark[indx][j]<0)
-                                cout<<"Enter number positive please \n";
-                        }while (Mark[indx][j]<0);
+                            if(Mark[indx][j]<0 || Mark[indx][j]>20)
+                                cout<<"Enter number in range 0-20 \n";
+                            
+                        }while (Mark[indx][j]<0 || Mark[indx][j]>20);
 
                         break;
                         
@@ -133,15 +138,16 @@ using namespace std;
 
     }
 
-    void display_by_Cariteria(Student_Record record[],int number,float avg){
+    void display_by_Cariteria(Student_Record record[],int number,float avg,string first,string last,int id){
         bool b=false;
             for(int i=0;i<number;i++){
-                if(avg==record[i].average){
-                        cout<<"************* student "<<i+1<<" *************\n";
+                if(avg==record[i].average || first==record[i].firstName && last==record[i].lastName  || id ==record[i].ID){
+                        cout<<"************* student *************\n";
                         cout<<"the first name :"<<record[i].firstName<<endl;
                         cout<<"the last name :"<<record[i].lastName<<endl;
                         cout<<"the class :"<<record[i].studentClass<<endl;                        
-                        cout<<"ID :"<<record[i].ID<<endl;                        
+                        cout<<"ID :"<<record[i].ID<<endl;
+                        cout<<"contact informaation :"<<record[i].contactInfo<<endl;                        
                         b=true;
                 }
             }
@@ -200,19 +206,31 @@ using namespace std;
                                 }
                             }
     }
-    void display_Record(Student_Record students[],int number_of_student){
-        for(int i=0;i<number_of_student;i++){
-            cout<<"************* student "<<i+1<<" *************\n";
-        cout<<"the first name :"<<students[i].firstName<<endl;
-        cout<<"the last name :"<<students[i].lastName<<endl;
-        cout<<"the date of birth :"<<students[i].Date.Day<<" "<<students[i].Date.month<<" "<<students[i].Date.year<<endl;
-        cout<<"the address :"<<students[i].address<<endl;
-        cout<<"ID :"<<students[i].ID<<endl;
-        cout<<"the class :"<<students[i].studentClass<<endl;
-        cout<<"the contact :"<<students[i].contactInfo<<endl;
-        cout<<"the average :"<<students[i].average<<endl;
+    void display_Record(Student_Record students[],int indx){
+        
+            cout<<"************* student *************\n";
+        cout<<"the first name :"<<students[indx].firstName<<endl;
+        cout<<"the last name :"<<students[indx].lastName<<endl;
+        cout<<"the date of birth :"<<students[indx].Date.Day<<" "<<students[indx].Date.month<<" "<<students[indx].Date.year<<endl;
+        cout<<"the address :"<<students[indx].address<<endl;
+        cout<<"ID :"<<students[indx].ID<<endl;
+        cout<<"the class :"<<students[indx].studentClass<<endl;
+        cout<<"the contact :"<<students[indx].contactInfo<<endl;
+        cout<<"the average :"<<students[indx].average<<endl;
 
+    
     }
+    bool IsFull(string nameClass,Student_Record student[],int number){
+        int n_class=0;
+        for(int i=0;i<number;i++){
+            if(student[i].studentClass==nameClass){
+                n_class++;
+            }
+        }
+        if(n_class==Max_Class){
+            return true;
+        }
+        return false;
     }
 int main()
 {
@@ -255,19 +273,45 @@ int main()
                         }while (choice!=1 && choice!=2 && choice!=3 && choice!=4 && choice!=5);
                                 if(choice==1){
                                     cout<<"Enter the first name of student :";
-                                    cin>>new_student.firstName;
+                                    // cin>>new_student.firstName;
+                                    cin.ignore(1,'\n');
+                                    getline(cin,new_student.firstName);
                                     cout<<"Enter the last name of student :";
-                                    cin>>new_student.lastName;
+                                     cin>>new_student.lastName;
+                                    // cin.ignore(1,'\n');
+                                    // getline(cin,new_student.lastName);
+                                    do{
                                     cout<<"Enter his day of birth :";
                                     cin>>new_student.Date.Day;
+                                    if(new_student.Date.Day>31)
+                                        cout<<"The error : This day does not exist.\n";
+                                    }while (new_student.Date.Day>31) ;                            
+                
                                     cout<<"Enter his month of birth :";
                                     cin>>new_student.Date.month;
+                                    
                                     cout<<"Enter his year of birth :";
+                                    do{
                                     cin>>new_student.Date.year;
+                                    if(new_student.Date.year<2003 || new_student.Date.year>2006)
+                                        cout<<"Reconfirm the year of birth :\n";
+                                    }while (new_student.Date.year<2003 || new_student.Date.year>2006);
+                                    
+                                    
                                     cout<<"Enter the address of student :";
-                                    cin>>new_student.address;
+                                    // cin>>new_student.address;
+                                    cin.ignore(1,'\n');
+                                    getline(cin,new_student.address);
                                     cout<<"Enter the class of student :";
                                     cin>>new_student.studentClass;
+                                    bool sizeClass;
+                                    sizeClass=IsFull(new_student.studentClass,students,number_of_student);
+                                    while(sizeClass){                                       
+                                        cout<<"the class is full.\nplease enter the new class:";
+                                        cin>>new_student.studentClass;
+                                        sizeClass=IsFull(new_student.studentClass,students,number_of_student);
+                                    }    
+
                                     cout<<"Enter the contact of student :";
                                     cin>>new_student.contactInfo;
                                     cout<<"Enter the ID :";
@@ -285,29 +329,54 @@ int main()
                                 }
                                 else{
                                         if(choice==5){
-                                             float avg;
+                                            
+                                            cout<<"what is a information :\n[1] full name\n[2] id\n[3] avrage"<<endl;
+                                            cin>>choice;
+                                            float avg;
+                                            string first,last;
+                                            int id;
+                                            clear_screen();
+                                            if(choice==1){
+                                                
+                                                cout<<"Enter the first name of student :";
+                                                // cin>>new_student.firstName;
+                                                cin.ignore(1,'\n');
+                                                getline(cin,first);
+                                                cout<<"Enter the last name of student :";
+                                                cin>>new_student.lastName;
+                                                // cin.ignore(1,'\n');
+                                                // getline(cin,last);
+                                                
+                                            }
+                                            else if(choice==2){
+                                                
+                                                cout<<"enter the ID :";
+                                                cin>>id;
+                                            }
+                                            else{
+                                             
                                              cout<<"Enter the avrage of student :";
                                              cin>>avg;
-                                             display_by_Cariteria(students,number_of_student,avg); 
-                                                
-                                            
-                                            
-                                            
-                                               
-                                            
-
+                                            }
+                                            clear_screen();
+                                             display_by_Cariteria(students,number_of_student,avg,first,last,id); 
 
                                         }
                                         else{
                                             if(choice==2){
-                                                display_Record(students,number_of_student);
-                                                    
-                                            
-                                            
-                                            
-                                               
-                                            
-
+                                                string first ,last ;
+                                                cout<<"enter the first name :";
+                                                cin.ignore(1,'\n');
+                                                getline(cin,first);
+                                                cout<<"enter the last name :";
+                                                cin.ignore(1,'\n');
+                                                getline(cin,last);
+                                                clear_screen();
+                                                int i=search(students,number_of_student,first,last);
+                                                if(i<0)
+                                                    cout<<"this not existed.\n";
+                                                else
+                                                    display_Record(students,i);
 
                                             }
                                             else{
